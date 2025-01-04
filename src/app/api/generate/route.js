@@ -17,6 +17,7 @@ if (typeof window !== 'undefined') {
 }
 
 function changeFormatJSON(data) {
+  if (!data) return []; // Add this check
   const result = [];
   const keys = Object.keys(data);
 
@@ -28,7 +29,6 @@ function changeFormatJSON(data) {
     });
     result.push(obj);
   }
-
 
   return result;
 }
@@ -51,18 +51,18 @@ export async function POST(request) {
 
     doc.render({
       upm_faculty: 'Fakultas Teknik',
-      tanggal_dibuat: '2025-01-05' || data?.tanggal_dibuat,
-      nama_matakuliah: data?.matakuliah?.nama,
-      kode_matakuliah: data?.matakuliah?.kode,
-      rumpun_mk: data?.matakuliah?.rumpun_mk,
-      semester: data?.matakuliah?.semester,
-      deskripsi_matakuliah: data?.deskripsi_matakuliah,
-      koordinator_matakuliah: data?.dosen_pengembang?.koordinator_matakuliah,
-      ketua_program_studi: data?.dosen_pengembang?.ketua_program_studi,
-      cpl: changeFormatJSON(data?.capaian_pembelajaran_lulusan),
-      cpmk: changeFormatJSON(data?.capaian_pembelajaran_matakuliah),
-      sub_cpmk: changeFormatJSON(data?.kemampuan_akhir),
-      bahan_kajian: data?.bahan_kajian.map((item, index) => ({ key: `${index + 1}. ${item}` }))
+      tanggal_dibuat: '2025-01-05' || data?.tanggal_dibuat || '',
+      nama_matakuliah: data?.matakuliah?.nama || '' || '',
+      kode_matakuliah: data?.matakuliah?.kode || '',
+      rumpun_mk: data?.matakuliah?.rumpun_mk || '',
+      semester: data?.matakuliah?.semester || '',
+      deskripsi_matakuliah: data?.deskripsi_matakuliah || '',
+      koordinator_matakuliah: data?.dosen_pengembang?.koordinator_matakuliah || '',
+      ketua_program_studi: data?.dosen_pengembang?.ketua_program_studi || '',
+      cpl: changeFormatJSON(data?.capaian_pembelajaran_lulusan) || '',
+      cpmk: changeFormatJSON(data?.capaian_pembelajaran_matakuliah) || '',
+      sub_cpmk: changeFormatJSON(data?.kemampuan_akhir) || '',
+      bahan_kajian: data?.bahan_kajian.map((item, index) => ({ key: `${index + 1}. ${item}` })) || ''
     });
 
     const buffer = doc.getZip().generate({ type: 'nodebuffer' });

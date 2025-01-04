@@ -40,6 +40,7 @@ export default function ResultDisplay({ generateRps }) {
 
     try {
       const response = await axios.post('/api/generate', generateRps, { responseType: 'blob' });
+
       const courseName = generateRps?.matakuliah?.nama?.replace(/\s+/g, '_') || 'document';
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
