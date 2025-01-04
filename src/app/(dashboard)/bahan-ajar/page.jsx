@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useState, useEffect } from 'react'
 
@@ -129,6 +130,12 @@ export default function Page() {
       console.error('Error generating document:', error);
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      handleGenerateDocument();
+    }
+  }, [result]);
 
   return (
     <>
