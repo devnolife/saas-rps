@@ -132,12 +132,6 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      handleGenerateDocument();
-    }
-  }, [result]);
-
   return (
     <>
       <Card>
