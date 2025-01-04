@@ -118,7 +118,6 @@ export default function Page() {
     try {
       const response = await axios.post('/api/bahan-ajar', result, { responseType: 'blob' });
 
-      console.log("🚀 ~ handleGenerateDocument ~ response:", response)
       const courseName = result?.matakuliah_info?.nama?.replace(/\s+/g, '_') || 'document';
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');

@@ -54,7 +54,6 @@ const useGraphql = (accessToken) => {
       return response.data;
     } catch (error) {
       handleTokenExpiration(error);
-      toast.error(errorMessage);
       throw error;
     } finally {
       setLoading(false);
@@ -79,14 +78,12 @@ const useGraphql = (accessToken) => {
       });
 
       if (response.data?.errors && response.data.errors.length > 0) {
-        toast.error("Terjadi kesalahan saat memproses permintaan");
+        throw new Error(response.data.errors[0].message);
+      } else {
+        return response.data;
       }
-
-
-      return response.data;
     } catch (error) {
       handleTokenExpiration(error);
-      toast.error(errorMessage);
       throw error;
     } finally {
       setLoading(false);

@@ -13,8 +13,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import classnames from 'classnames'
-
-import { toast, ToastContainer } from 'react-toastify'
+import CircularProgress from '@mui/material/CircularProgress'
 
 import Link from '@components/Link'
 import Logo from '@components/layout/shared/Logo'
@@ -55,6 +54,8 @@ const LoginV2 = ({ mode }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [errors, setErrors] = useState({ username: '', password: '' })
+  const [loading, setLoading] = useState(false)
+  const [serverError, setServerError] = useState('')
 
   const darkImg = '/images/pages/auth-mask-dark.png'
   const lightImg = '/images/pages/auth-mask-light.png'
@@ -89,6 +90,9 @@ const LoginV2 = ({ mode }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault()
+    setLoading(true)
+    setServerError('')
+
     const username = e.target.username.value
     const password = e.target.password.value
 
@@ -97,7 +101,12 @@ const LoginV2 = ({ mode }) => {
     if (!username) newErrors.username = 'Harap isi username'
     if (!password) newErrors.password = 'Harap isi kata sandi'
     setErrors(newErrors)
-    if (newErrors.username || newErrors.password) return
+
+    if (newErrors.username || newErrors.password) {
+      setLoading(false)
+
+      return
+    }
 
     const mutation = `
         mutation Signin {
@@ -107,20 +116,27 @@ const LoginV2 = ({ mode }) => {
         }
       `
 
-    try {
-      const response = await mutate(mutation)
-      const token = response?.data?.signin.access_token
+    await mutate(mutation)
+      .then((response) => {
+        const token = response?.data?.signin.access_token
 
-      localStorage.setItem('access_token', token)
-      router.push('/home')
-    } catch (error) {
-      toast.error('Ada kesalahan saat login, silahkan coba lagi')
-    }
+        localStorage.setItem('access_token', token)
+        router.push('/home')
+        setLoading(false)
+      })
+      .catch((error) => {
+        setServerError(error.message || 'Username atau kata sandi salah')
+        setLoading(false)
+      })
   }
 
   return (
     <div className='flex justify-center bs-full'>
-      <ToastContainer />
+      {loading && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+          <CircularProgress />
+        </div>
+      )}
       <div
         className={classnames(
           'flex bs-full items-center justify-center flex-1 min-bs-[100dvh] relative p-6 max-md:hidden',
@@ -176,13 +192,18 @@ const LoginV2 = ({ mode }) => {
               helperText={errors.password}
               onChange={() => setErrors(current => ({ ...current, password: '' }))}
             />
+            {serverError && (
+              <Typography color='error.main' variant='body2' textAlign={'center'}>
+                {serverError}
+              </Typography>
+            )}
             <div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-1'>
               <Typography className='text-end' color='primary.main' component={Link}>
                 Lupa kata sandi?
               </Typography>
             </div>
             <Button fullWidth variant='contained' type='submit'>
-              Masuk
+              Login
             </Button>
 
             <Divider className='gap-2 text-textPrimary'>created by devnolife</Divider>

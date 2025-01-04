@@ -49,8 +49,16 @@ export async function POST(request) {
     });
 
     const pertemuanPerPekanUpper = data?.pertemuan_per_pekan?.map((item) => ({
+
       ...item,
-      PEKAN: `${item.pekan}`.toUpperCase()
+      PEKAN: `${item.pekan}`.toUpperCase(),
+      deskripsi_topik: item?.deskripsi_topik || '',
+      cpmk_pekan: Array.isArray(item?.cpmk) ? item.cpmk.map((cpmk, index) => ({
+        cpmk_value: `${index + 1}. ${cpmk}`,
+      })) : [],
+      sub_cpmk_pekan: Array.isArray(item?.sub_cpmk) ? item.sub_cpmk.map((cpmk, index) => ({
+        sub_cpmk_value: `${index + 1}. ${cpmk}`,
+      })) : [],
     }));
 
     doc.render({
@@ -88,6 +96,8 @@ export async function POST(request) {
       }
     });
   } catch (e) {
+    console.log("🚀 ~ POST ~ e:", e)
+
     return NextResponse.json({ error: e }, { status: 500 });
   }
 }
