@@ -71,7 +71,6 @@ export default function Page() {
             sks
             semester
           }
-
           capaian_pembelajaran_lulusan {
             kode
             nama
@@ -80,10 +79,7 @@ export default function Page() {
             kode
             nama
           }
-          kemampuan_akhir {
-            kode
-            nama
-          }
+
           topik_perpekan_item {
             pekan
             sub_cpmk
