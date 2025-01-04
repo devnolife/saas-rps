@@ -17,7 +17,7 @@
  */
 const themeConfig = {
   templateName: 'Generator RPS',
-  homePageUrl: '/home',
+  homePageUrl: '/login',
   settingsCookieName: 'rps_settings',
   mode: 'system', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'
