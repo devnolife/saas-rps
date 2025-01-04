@@ -58,8 +58,8 @@ const VerticalMenu = ({ scrollMenu }) => {
         <MenuItem href='/home' icon={<i className='tabler-smart-home' />}>
           Home
         </MenuItem>
-        <MenuItem href='/materi' icon={<i className='tabler-calendar-pause' />}>
-          Materi
+        <MenuItem href='/bahan-ajar' icon={<i className='tabler-calendar-pause' />}>
+          Bahan Ajar
         </MenuItem>
       </Menu>
       {/* <Menu

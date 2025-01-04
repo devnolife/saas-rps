@@ -1,7 +1,9 @@
+import { useState } from 'react';
+
+import { useRouter } from 'next/navigation';
+
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 const url = 'https://rps.if.unismuh.ac.id/graphql';
 
@@ -30,6 +32,7 @@ const useGraphql = (accessToken) => {
     { successMessage = 'Permintaan Berhasil', errorMessage = 'Masalah Permintaan', skipSuccessToast = false } = {}
   ) => {
     setLoading(true);
+
     try {
       const response = await axios.post(url, {
         query,
@@ -64,6 +67,7 @@ const useGraphql = (accessToken) => {
     { successMessage = 'Permintaan Berhasil', errorMessage = 'Masalah Permintaan', skipSuccessToast = false } = {}
   ) => {
     setLoading(true);
+
     try {
       const response = await axios.post(url, {
         query: mutation,
@@ -77,6 +81,8 @@ const useGraphql = (accessToken) => {
       if (response.data?.errors && response.data.errors.length > 0) {
         toast.error("Terjadi kesalahan saat memproses permintaan");
       }
+
+
       return response.data;
     } catch (error) {
       handleTokenExpiration(error);

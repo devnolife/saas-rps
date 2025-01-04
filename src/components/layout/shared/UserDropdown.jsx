@@ -1,6 +1,8 @@
 'use client'
 import { useRef, useState, useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
+
 import { styled } from '@mui/material/styles'
 import Badge from '@mui/material/Badge'
 import Avatar from '@mui/material/Avatar'
@@ -14,6 +16,7 @@ import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
+
 import { useSettings } from '@core/hooks/useSettings'
 import useGraphql from '@utils/useGraphql'
 
@@ -50,16 +53,19 @@ const UserDropdown = () => {
           }
         }
       `
+
       try {
         const response = await query(queryProfile, {}, { skipSuccessToast: true })
+
         if (response.data && response.data.profile) {
           const { name, role } = response.data.profile
+
           setProfile({ name, role })
         } else {
-          setProfile({ name: '', role: '' })
+          setProfile({ name: 'devnolife', role: 'admin' })
         }
       } catch (error) {
-        setProfile({ name: '', role: '' })
+        setProfile({ name: 'devnolife', role: 'admin' })
       } finally {
         setLoading(false)
         setIsProfileFetched(true)

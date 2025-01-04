@@ -7,7 +7,6 @@ import { NextResponse } from 'next/server';
 import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
 
-
 let PizZipUtils = null;
 
 if (typeof window !== 'undefined') {
@@ -38,7 +37,7 @@ export async function POST(request) {
     const data = await request.json();
 
     const content = fs.readFileSync(
-      path.resolve(process.cwd(), "src/app/api/generate/Template-RPS-2025.docx"),
+      path.resolve(process.cwd(), "src/app/api/bahan-ajar/bahan_ajar.docx"),
       "binary"
     );
 
@@ -49,26 +48,33 @@ export async function POST(request) {
       linebreaks: true
     });
 
+    const pertemuanPerPekanUpper = data?.pertemuan_per_pekan?.map((item) => ({
+      ...item,
+      PEKAN: `${item.pekan}`.toUpperCase()
+    }));
+
     doc.render({
-      upm_faculty: 'Fakultas Teknik',
-      tanggal_dibuat: '2025-01-05' || data?.tanggal_dibuat,
-      nama_matakuliah: data?.matakuliah?.nama,
-      kode_matakuliah: data?.matakuliah?.kode,
-      rumpun_mk: data?.matakuliah?.rumpun_mk,
-      semester: data?.matakuliah?.semester,
-      deskripsi_matakuliah: data?.deskripsi_matakuliah,
-      koordinator_matakuliah: data?.dosen_pengembang?.koordinator_matakuliah,
-      ketua_program_studi: data?.dosen_pengembang?.ketua_program_studi,
-      cpl: changeFormatJSON(data?.capaian_pembelajaran_lulusan),
-      cpmk: changeFormatJSON(data?.capaian_pembelajaran_matakuliah),
-      sub_cpmk: changeFormatJSON(data?.kemampuan_akhir),
-      bahan_kajian: data?.bahan_kajian.map((item, index) => ({ key: `${index + 1}. ${item}` }))
+      kata_pengantar: data?.kata_pengantar,
+      deskripsi_maata_kuliah: data?.pengantar_matakuliah?.deskripsi_maata_kuliah,
+      cpl: data?.pengantar_matakuliah?.capaian_pembelajaran?.capaian_pembelajaran_lulusan.map((cpl, index) => ({
+        capaian_pembelajaran_lulusan: `${index + 1}. ${cpl}`,
+      })),
+      cpmk: data?.pengantar_matakuliah?.capaian_pembelajaran?.capaian_pembelajaran_matakuliah.map((cpmk, index) => ({
+        capaian_pembelajaran_matakuliah: `${index + 1}. ${cpmk}`,
+      })),
+      topik_materi_ajar: data?.topik_materi_ajar.map((topik, index) => ({
+        topik: `${index + 1}. ${topik}`,
+      })),
+      cara_penggunaan_module: data?.cara_penggunaan_module,
+      referensi: data?.referensi,
+      per_pekan: pertemuanPerPekanUpper
     });
+
 
     const buffer = doc.getZip().generate({ type: 'nodebuffer' });
     const courseName = data?.matakuliah?.nama?.replace(/\s+/g, '_') || 'document';
     const fileName = `${courseName}_rps.docx`;
-    const filePath = path.resolve(process.cwd(), `src/app/api/generate/${fileName}`);
+    const filePath = path.resolve(process.cwd(), `src/app/api/bahan-ajar/${fileName}`);
 
     fs.writeFileSync(filePath, buffer);
 

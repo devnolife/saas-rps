@@ -1,6 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
+
+import Image from 'next/image'
+
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -10,18 +14,18 @@ import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import classnames from 'classnames'
 
+import { toast, ToastContainer } from 'react-toastify'
+
 import Link from '@components/Link'
 import Logo from '@components/layout/shared/Logo'
 import CustomTextField from '@core/components/mui/TextField'
 
 import themeConfig from '@configs/themeConfig'
-import Image from 'next/image'
 
 import { useImageVariant } from '@core/hooks/useImageVariant'
 import { useSettings } from '@core/hooks/useSettings'
 import useGraphql from '@utils/useGraphql'
-import { toast } from 'react-toastify'
-import { ToastContainer } from 'react-toastify'
+
 
 const LoginIllustration = styled('img')(({ theme }) => ({
   zIndex: 2,
@@ -89,6 +93,7 @@ const LoginV2 = ({ mode }) => {
     const password = e.target.password.value
 
     let newErrors = { username: '', password: '' }
+
     if (!username) newErrors.username = 'Harap isi username'
     if (!password) newErrors.password = 'Harap isi kata sandi'
     setErrors(newErrors)
@@ -105,6 +110,7 @@ const LoginV2 = ({ mode }) => {
     try {
       const response = await mutate(mutation)
       const token = response?.data?.signin.access_token
+
       localStorage.setItem('access_token', token)
       router.push('/home')
     } catch (error) {
@@ -135,6 +141,9 @@ const LoginV2 = ({ mode }) => {
       <div className='flex justify-center items-center bs-full bg-backgroundPaper !min-is-full p-6 md:!min-is-[unset] md:p-12 md:is-[480px]'>
         <div className='absolute block-start-5 sm:block-start-[33px] inline-start-6 sm:inline-start-[38px] flex items-center gap-4'>
           <Image src={Logo} alt='logo' width={50} height={50} />
+          <Typography variant='h4' className='text-black'>
+            Saas Artificial intelligence
+          </Typography>
         </div>
         <div className='flex flex-col gap-6 is-full sm:is-auto md:is-full sm:max-is-[400px] md:max-is-[unset] mbs-11 sm:mbs-14 md:mbs-0'>
           <div className='flex flex-col gap-1'>
