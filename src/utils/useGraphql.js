@@ -21,7 +21,7 @@ const useGraphql = (accessToken) => {
 
       if (isUnauthorized || isGraphqlUnauthorized) {
         isLoggingOut = true;
-        router.push('/logout');
+        router.push('/login');
       }
     }
   };
