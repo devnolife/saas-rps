@@ -14,7 +14,8 @@ import {
   Chip,
   Button,
   CircularProgress,
-  Box
+  Box,
+  LinearProgress
 } from '@mui/material';
 import axios from 'axios';
 import Tab from '@mui/material/Tab';
@@ -30,11 +31,8 @@ const getRandomColor = () => {
     color += letters[Math.floor(Math.random() * 16)];
   }
 
-
   return color;
 };
-
-
 
 const generateRps = {
   "bahan_kajian": [
@@ -298,39 +296,134 @@ export default function ResultDisplay() {
             <TabPanel value="mata-kuliah">
               <Card sx={{ mb: 3 }}>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom>Deskripsi Mata Kuliah</Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
+                  <Typography variant="h4" gutterBottom>Deskripsi Mata Kuliah</Typography>
+                  <Typography variant="body2" sx={{ mb: 3 }}>
                     {generateRps?.deskripsi_matakuliah}
                   </Typography>
-                  <Typography variant="h6" sx={{ mb: 1 }}>Capaian Pembelajaran Lulusan</Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                  <Typography variant="h5" sx={{ mb: 1, mt: 2 }}>Capaian Pembelajaran Lulusan</Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
                     {generateRps?.capaian_pembelajaran_lulusan?.kode?.map((code, idx) => (
-                      <Chip
-                        key={idx}
-                        label={`${code}: ${generateRps?.capaian_pembelajaran_lulusan?.nama?.[idx]}`}
-                      />
+                      <Box key={idx} sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1, p: 1, border: '1px solid #ddd',
+                        borderRadius: 1,
+                        width: '100%'
+                      }}>
+                        <Chip variant='tonal' label={code} color="success" sx={{ mr: 1, width: '68px' }} />
+                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                          {generateRps?.capaian_pembelajaran_lulusan?.nama?.[idx]}
+                        </Typography>
+                      </Box>
                     ))}
                   </Box>
-                  <Typography variant="h6" sx={{ mt: 2 }}>Capaian Pembelajaran Mata Kuliah</Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  <Typography variant="h5" sx={{ mb: 1, mt: 2 }}>Capaian Pembelajaran Mata Kuliah</Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
                     {generateRps?.capaian_pembelajaran_matakuliah?.kode?.map((code, idx) => (
-                      <Chip
-                        key={idx}
-                        label={`${code}: ${generateRps?.capaian_pembelajaran_matakuliah?.nama?.[idx]}`}
-                      />
+                      <Box key={idx} sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1, p: 1, border: '1px solid #ddd',
+                        borderRadius: 1,
+                        width: '100%'
+                      }}>
+                        <Chip variant='tonal' label={code} color="warning" sx={{ mr: 1 }} />
+                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                          {generateRps?.capaian_pembelajaran_matakuliah?.nama?.[idx]}
+                        </Typography>
+                      </Box>
                     ))}
                   </Box>
                 </CardContent>
               </Card>
             </TabPanel>
             <TabPanel value="topik-mingguan">
-              {/* Tampilkan topik mingguan dari generateRps */}
+              <Grid container spacing={2}>
+                {generateRps?.topik_perpekan_item?.map((item, idx) => (
+                  <Grid item xs={12} sm={generateRps.topik_perpekan_item.length > 6 ? 4 : 6} key={idx}>
+                    <Card sx={{ height: '100%' }}>
+                      <CardContent>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 2, flex: 'center' }}>
+                          <i className='tabler-school' />
+                          <Typography sx={{ ml: 2 }}
+                            variant="h5">Pekan {item.pekan}</Typography>
+                        </Box>
+                        <Box sx={{ mb: 2 }}>
+                          <Chip variant='tonal' label="Sub-CPMK" color="secondary" sx={{ mr: 1, mb: 1 }} />
+                          <Typography
+                            variant="body2" sx={{ display: 'block', marginLeft: 2 }}>
+                            {item.sub_cpmk.join(', ')}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ mb: 2 }}>
+                          <Chip variant='tonal' label="Indikator" color="success" sx={{ mr: 1, mb: 1 }} />
+                          <Typography variant="body2" sx={{ display: 'block', marginLeft: 2 }}>
+                            {item.indikator.join(', ')}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Chip variant='tonal' label="Bahan Kajian" color="warning" sx={{ mr: 1, mb: 1 }} />
+                          <Typography variant="body2" sx={{ display: 'block', marginLeft: 2 }}>
+                            {item.bahan_kajian.join(', ')}
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
             </TabPanel>
             <TabPanel value="penilaian">
-              {/* Tampilkan komponen penilaian dari generateRps */}
+              <Card sx={{ mb: 3 }}>
+                <CardContent>
+                  <Typography variant="h4" gutterBottom>Komponen Penilaian</Typography>
+                  {Object.entries(komponen_penilaian).map(([key, value]) => (
+                    <Box key={key} sx={{ mb: 3 }}>
+                      <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', mb: 2 }}>
+                        {key.charAt(0).toUpperCase() + key.slice(1)}: {value}%
+                      </Typography>
+                      <LinearProgress color='info'
+                        variant="determinate" value={value} sx={{ height: 15 }} />
+                    </Box>
+                  ))}
+                </CardContent>
+              </Card>
             </TabPanel>
-            <TabPanel value="dosen-bersangkutan">
-              {/* Tampilkan dosen pengembang dari generateRps */}
+            <TabPanel value="dosen">
+              <Grid container spacing={2}>
+                {dosen_pengembang?.dosen_pengampuh?.map((dosen, idx) => (
+                  <Grid item xs={12} sm={6} md={4} key={idx}>
+                    <Card sx={{ height: '100%' }}>
+                      <CardContent>
+                        <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                          <i className="tabler-icon-user" style={{ marginRight: 8, fontSize: '20px', color: '#1976d2' }}></i>
+                          {dosen}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+                <Grid item xs={12}>
+                  <Card sx={{ border: '2px solid #1976d2', backgroundColor: '#e3f2fd', mt: 2 }}>
+                    <CardContent>
+                      <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                        <i className="tabler-icon-user-check" style={{ marginRight: 8, fontSize: '20px', color: '#1976d2' }}></i>
+                        Koordinator Mata Kuliah: {dosen_pengembang?.koordinator_matakuliah}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12}>
+                  <Card sx={{ border: '2px solid #388e3c', backgroundColor: '#e8f5e9', mt: 2 }}>
+                    <CardContent>
+                      <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                        <i className="tabler-icon-school" style={{ marginRight: 8, fontSize: '20px', color: '#388e3c' }}></i>
+                        Ketua Program Studi: {dosen_pengembang?.ketua_program_studi}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
             </TabPanel>
           </TabContext>
         </Box>
