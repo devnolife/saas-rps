@@ -368,7 +368,7 @@ export default function CourseForm({ formData, setFormData, handleChange, handle
       <Divider />
       <CardActions>
         <Button type="submit" variant="contained" className='mie-2'>
-          Kirim
+          Generate
         </Button>
         <Button
           type="reset"

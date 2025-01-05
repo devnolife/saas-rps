@@ -2,14 +2,11 @@
 'use client';
 import { useState, useEffect } from 'react'
 
-import axios from 'axios';
-
-import { Button, Typography, Box, Card, CardHeader, CardContent, Grid, InputAdornment, Divider, IconButton, MenuItem, CardActions, CircularProgress } from '@mui/material';
-
-import { toast, ToastContainer } from 'react-toastify';
+import { Button, Box, Card, CardHeader, Divider, CardActions, CircularProgress } from '@mui/material';
 
 import useGraphql from '@utils/useGraphql'
 import InputForm from './InputForm'
+import HasilGenerate from './HasilGenerate';
 
 export default function Page() {
   const [formData, setFormData] = useState({
@@ -112,26 +109,6 @@ export default function Page() {
     setResult(result?.data?.generateBahanAjar);
   };
 
-  const handleGenerateDocument = async () => {
-    if (!result) return;
-
-    try {
-      const response = await axios.post('/api/bahan-ajar', result, { responseType: 'blob' });
-
-      const courseName = result?.matakuliah_info?.nama?.replace(/\s+/g, '_') || 'document';
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-
-      link.href = url;
-      link.setAttribute('download', `${courseName}_rps.docx`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    } catch (error) {
-      console.error('Error generating document:', error);
-    }
-  };
-
   return (
     <>
       <Card>
@@ -152,17 +129,7 @@ export default function Page() {
       </Card>
       {result && (
         <>
-          <CardActions>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleGenerateDocument}
-              disabled={loading}
-              sx={{ width: '100%', height: 50 }}
-            >
-              {loading ? <CircularProgress size={20} /> : 'Download Bahan Ajar'}
-            </Button>
-          </CardActions>
+          <HasilGenerate result={result} />
         </>
       )}
     </>
