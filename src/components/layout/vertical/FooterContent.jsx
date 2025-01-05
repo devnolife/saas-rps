@@ -24,7 +24,7 @@ const FooterContent = () => {
         <span className='text-textSecondary'>{`© ${new Date().getFullYear()}, Made with `}</span>
         <span>{`❤️`}</span>
         <span className='text-textSecondary'>{` by `}</span>
-        <Link href='https://pixinvent.com' target='_blank' className='text-primary'>
+        <Link href='https://github.com/devnolife' target='_blank' className='text-primary'>
           devnolife
         </Link>
       </p>
