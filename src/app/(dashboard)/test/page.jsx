@@ -3,447 +3,338 @@
 import { useState } from 'react';
 
 import {
-  Container,
   Typography,
   Card,
   CardContent,
-  Box,
+  Divider,
+  Grid,
   List,
   ListItem,
   ListItemText,
   Chip,
-  ListItemIcon,
+  Button,
+  CircularProgress,
+  Box
 } from '@mui/material';
+import axios from 'axios';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
-import Tab from '@mui/material/Tab'
-import TabContext from '@mui/lab/TabContext'
-import TabList from '@mui/lab/TabList'
-import TabPanel from '@mui/lab/TabPanel'
+const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
 
-import { styled } from '@mui/material/styles'
-import MuiAccordion from '@mui/material/Accordion'
-import MuiAccordionSummary from '@mui/material/AccordionSummary'
-import MuiAccordionDetails from '@mui/material/AccordionDetails'
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
 
-import Button from '@mui/material/Button';
 
-const courseData = {
-  kata_pengantar: "Modul ini dibuat untuk memenuhi kebutuhan dosen dan mahasiswa dalam memahami materi konsep dasar Algoritma dan Pemrograman, dengan tujuan untuk mendukung pembelajaran mandiri serta memberikan materi yang lebih inovatif dan terstruktur. Mata kuliah ini sangat relevan bagi mahasiswa dalam bidang pemrograman dan teknologi informasi, mendasari berbagai kursus lanjut dan aplikasi nyata dalam kehidupan sehari-hari. Melalui modul ini, diharapkan mahasiswa dapat memahami prinsip-prinsip dasar algoritma, mampu menerapkannya dalam pemrograman, dan mengembangkan kemampuan analisis logika. Materi yang akan dibahas mencakup pengantar algoritma, struktur data dasar, serta metode dan teknik pemrograman. Ucapan terima kasih kami sampaikan kepada semua pihak yang telah membantu dalam penyusunan modul ini. Harapan kami adalah agar modul ini bermanfaat bagi mahasiswa dalam mendalami materi dan meningkatkan prestasi belajar mereka.",
-  topik_materi_ajar: [
-    "Pengantar Algoritma",
-    "Struktur Data Dasar",
-    "Pengantar Bahasa Pemrograman"
-  ],
-  cara_penggunaan_module: "Mahasiswa disarankan untuk mempelajari modul secara berurutan sesuai dengan topik yang disediakan. Untuk pemahaman maksimal, baca materi yang disediakan dan lakukan latihan serta tugas yang terlampir.",
-  referensi: [
-    "Algoritma dan Pemrograman - Author 1",
-    "Dasar-Dasar Pemrograman - Author 2"
-  ],
-  matakuliah_info: {
-    kode: "alpro",
-    nama: "alpro",
-    rumpun_mk: "alpro",
-    sks: 2,
-    semester: 2
-  },
-  pengantar_matakuliah: {
-    deskripsi_maata_kuliah: "Mata kuliah Algoritma dan Pemrograman (Alpro) memberikan pemahaman tentang dasar-dasar algoritma dan cara implementasinya dalam bahasa pemrograman. Materi yang dibahas mencakup logika pemrograman, struktur data, serta perancangan algoritma. Relevansi mata kuliah ini sangat tinggi, karena memberikan pondasi yang kuat bagi mahasiswa dalam dunia pemrograman dan pengembangan perangkat lunak.",
-    capaian_pembelajaran: {
-      capaian_pembelajaran_lulusan: [
-        "Mampu berkomunikasi dengan baik dalam lingkungan profesional",
-        "Mempunyai sikap inovatif dan kreatif dalam memecahkan masalah",
-        "Bertanggung jawab atas pekerjaan individu ataupun kelompok."
-      ],
-      capaian_pembelajaran_matakuliah: [
-        "Mampu memahami dan menjelaskan dasar-dasar algoritma dan pemrograman",
-        "Menganalisis persoalan dan merancang algoritma sebagai solusi",
-        "Mampu memprogram menggunakan bahasa pemrograman tertentu."
-      ],
-      sub_cpmk: [
-        "Menjelaskan konsep dasar algoritma",
-        "Mengimplementasikan algoritma sederhana dalam kode",
-        "Menganalisis dan melakukan debugging program."
-      ]
-    }
-  },
-  pertemuan_per_pekan: [
-    {
-      pekan: 1,
-      deskripsi_topik: "Pengantar Algoritma",
-      cpmk: [
-        "Mampu memahami konsep dasar algoritma"
-      ],
-      sub_cpmk: [
-        "Menjelaskan apa itu algoritma"
-      ],
-      indikator: [
-        "Mahasiswa dapat menjelaskan definisi algoritma",
-        "Mahasiswa dapat memberikan contoh algoritma sederhana"
-      ],
-      bahan_kajian: [
-        "Materi pengantar tentang algoritma",
-        "Contoh algoritma sederhana"
-      ],
-      petunjuk_belajar_topik: "Mulailah dengan memahami definisi algoritma, kemudian baca contoh yang diberikan."
-    },
-    {
-      pekan: 2,
-      deskripsi_topik: "Struktur Data Dasar",
-      cpmk: [
-        "Mampu memahami struktur data dalam pemrograman"
-      ],
-      sub_cpmk: [
-        "Menjelaskan berbagai jenis struktur data"
-      ],
-      indikator: [
-        "Mahasiswa dapat membedakan antara array dan linked list",
-        "Mahasiswa dapat menggunakan struktur data dasar"
-      ],
-      bahan_kajian: [
-        "Pengertian dan jenis-jenis struktur data",
-        "Contoh penggunaan struktur data dalam program"
-      ],
-      petunjuk_belajar_topik: "Pahami jenis-jenis struktur data yang ada, dan lakukan latihan menggunakan array dalam kode."
-    },
-    {
-      pekan: 3,
-      deskripsi_topik: "Pengantar Bahasa Pemrograman",
-      cpmk: [
-        "Mampu memprogram menggunakan bahasa pemrograman tertentu"
-      ],
-      sub_cpmk: [
-        "Menjelaskan sintaks dasar dalam bahasa pemrograman"
-      ],
-      indikator: [
-        "Mahasiswa dapat menulis kode sederhana menggunakan bahasa pemrograman yang dipilih"
-      ],
-      bahan_kajian: [
-        "Pengenalan bahasa pemrograman yang akan digunakan",
-        "Sintaks dasar dan struktur program"
-      ],
-      petunjuk_belajar_topik: "Pelajari sintaks dasar dalam bahasa pemrograman, kemudian coba untuk menulis program sederhana."
-    }
-  ]
+  return color;
 };
 
-const Accordion = styled(MuiAccordion)({
-  margin: '0 !important',
-  borderRadius: 0,
-  boxShadow: 'none !important',
-  border: '1px solid var(--mui-palette-divider)',
-  '&:not(:last-of-type)': {
-    borderBottom: 0
+
+
+const generateRps = {
+  "bahan_kajian": [
+    "Topik 1",
+    "Topik 2",
+    "Topik 3"
+  ],
+  "deskripsi_matakuliah": "Mata kuliah ini memberikan pemahaman dasar tentang algoritma dan pemrograman, termasuk pengenalan metode pemecahan masalah menggunakan bahasa pemrograman.",
+  "matakuliah": {
+    "kode": "IF-101",
+    "nama": "Algoritma dan Pemrograman",
+    "rumpun_mk": "Informatika",
+    "sks": 3,
+    "semester": 2
   },
-  '&:before': {
-    display: 'none'
+  "capaian_pembelajaran_lulusan": {
+    "kode": [
+      "CPL1",
+      "CPL2",
+      "CPL3"
+    ],
+    "nama": [
+      "Menunjukkan sikap profesional dan bertanggung jawab dalam bidang keilmuan.",
+      "Mampu memahami dan mengaplikasikan prinsip atau konsep ilmu yang diajarkan.",
+      "Mampu menyelesaikan masalah atau proyek secara kolaboratif dan mandiri."
+    ]
   },
-  '&:first-of-type': {
-    '& .MuiButtonBase-root': {
-      borderTopLeftRadius: 'var(--mui-shape-borderRadius)',
-      borderTopRightRadius: 'var(--mui-shape-borderRadius)'
+  "capaian_pembelajaran_matakuliah": {
+    "kode": [
+      "CPMK1",
+      "CPMK2",
+      "CPMK3"
+    ],
+    "nama": [
+      "Memahami dasar teori dan konsep dari mata kuliah.",
+      "Mengaplikasikan konsep tersebut dalam tugas praktis.",
+      "Menyusun solusi atau produk sesuai dengan materi pembelajaran."
+    ]
+  },
+  "topik_perpekan_item": [
+    {
+      "pekan": 1,
+      "sub_cpmk": [
+        "Sub-CPMK1"
+      ],
+      "indikator": [
+        "Mahasiswa dapat menjelaskan konsep dasar algoritma."
+      ],
+      "bahan_kajian": [
+        "Pengantar Algoritma"
+      ]
+    },
+    {
+      "pekan": 2,
+      "sub_cpmk": [
+        "Sub-CPMK1"
+      ],
+      "indikator": [
+        "Mahasiswa mampu memberikan contoh aplikasi algoritma."
+      ],
+      "bahan_kajian": [
+        "Contoh-contoh Algoritma dalam Kehidupan Sehari-hari"
+      ]
+    },
+    {
+      "pekan": 3,
+      "sub_cpmk": [
+        "Sub-CPMK2"
+      ],
+      "indikator": [
+        "Mahasiswa dapat mengimplementasikan algoritma dasar."
+      ],
+      "bahan_kajian": [
+        "Struktur Data Dasar"
+      ]
+    },
+    {
+      "pekan": 4,
+      "sub_cpmk": [
+        "Sub-CPMK2"
+      ],
+      "indikator": [
+        "Mampu menggunakan bahasa pemrograman untuk menyelesaikan masalah."
+      ],
+      "bahan_kajian": [
+        "Bahasa Pemrograman (Python/C++)"
+      ]
+    },
+    {
+      "pekan": 5,
+      "sub_cpmk": [
+        "Sub-CPMK3"
+      ],
+      "indikator": [
+        "Mahasiswa dapat merancang algoritma untuk masalah sederhana."
+      ],
+      "bahan_kajian": [
+        "Pembuatan Algoritma Sederhana"
+      ]
+    },
+    {
+      "pekan": 6,
+      "sub_cpmk": [
+        "Sub-CPMK3"
+      ],
+      "indikator": [
+        "Mampu mengimplementasikan algoritma dalam kode."
+      ],
+      "bahan_kajian": [
+        "Implementasi Algoritma dalam Program"
+      ]
+    },
+    {
+      "pekan": 7,
+      "sub_cpmk": [
+        "Sub-CPMK3"
+      ],
+      "indikator": [
+        "Mahasiswa dapat menyelesaikan proyek kecil dengan algoritma."
+      ],
+      "bahan_kajian": [
+        "Proyek Pembuatan Program"
+      ]
+    },
+    {
+      "pekan": 8,
+      "sub_cpmk": [
+        "Sub-CPMK3"
+      ],
+      "indikator": [
+        "Presentasi Proyek"
+      ],
+      "bahan_kajian": [
+        "Penilaian Proyek"
+      ]
+    },
+    {
+      "pekan": 9,
+      "sub_cpmk": [
+        "Sub-CPMK1"
+      ],
+      "indikator": [
+        "Mahasiswa dapat mereview algoritma yang digunakan."
+      ],
+      "bahan_kajian": [
+        "Review Algoritma"
+      ]
+    },
+    {
+      "pekan": 10,
+      "sub_cpmk": [
+        "Sub-CPMK2"
+      ],
+      "indikator": [
+        "Mampu menjelaskan kesalahan umum dalam pemrograman."
+      ],
+      "bahan_kajian": [
+        "Debugging dan Penanganan Error"
+      ]
+    },
+    {
+      "pekan": 11,
+      "sub_cpmk": [
+        "Sub-CPMK3"
+      ],
+      "indikator": [
+        "Mampu berkolaborasi dalam tim pada proyek."
+      ],
+      "bahan_kajian": [
+        "Kerja Tim dalam Proyek"
+      ]
+    },
+    {
+      "pekan": 12,
+      "sub_cpmk": [
+        "Sub-CPMK1"
+      ],
+      "indikator": [
+        "Menyusun laporan akhir proyek."
+      ],
+      "bahan_kajian": [
+        "Penyusunan Laporan Proyek"
+      ]
     }
+  ],
+  "komponen_penilaian": {
+    "kehadiran": 10,
+    "tugas": 30,
+    "praktikum": 40,
+    "UTS": 10,
+    "UAS": 10
   },
-  '&:last-of-type': {
-    '& .MuiAccordionSummary-root:not(.Mui-expanded)': {
-      borderBottomLeftRadius: 'var(--mui-shape-borderRadius)',
-      borderBottomRightRadius: 'var(--mui-shape-borderRadius)'
-    }
+  "dosen_pengembang": {
+    "dosen_pengampuh": [
+      "Dr. Akbar Wijaya, S.Kom., M.Kom.",
+      "Ir. Junaidi Alfian, M.T.",
+      "Fahri Firdausillah, S.Kom., M.Cs."
+    ],
+    "koordinator_matakuliah": "Dr. Jane Kusumawati, S.T., M.Cs.",
+    "ketua_program_studi": "Prof. Dr. Maikel Sanjaya, M.Sc."
   }
-})
+}
 
-const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
-  borderBlockEnd: '0 !important',
-  minHeight: theme.spacing(11.5),
-  transition: 'min-height 0.15s ease-in-out',
-  backgroundColor: 'var(--mui-palette-customColors-greyLightBg)',
-  '&.Mui-expanded': {
-    minHeight: theme.spacing(11.5),
-    borderBlockEnd: '1px solid var(--mui-palette-divider) !important',
-    '& .MuiAccordionSummary-expandIconWrapper': {
-      transform: 'rotate(180deg)'
-    }
-  }
-}))
+export default function ResultDisplay() {
 
-// Styled component for AccordionDetails component
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  paddingBlockStart: `${theme.spacing(6)} !important`
-}))
+  const matakuliah = generateRps?.matakuliah || {};
+  const dosen_pengembang = generateRps?.dosen_pengembang || {};
+  const komponen_penilaian = generateRps?.komponen_penilaian || {};
 
-const CourseDisplayMUI = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [activeWeek, setActiveWeek] = useState(1);
-  const [expanded, setExpanded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('mata-kuliah');
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
-  const handleAccordionChange = panel => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleGenerateDocument = async () => {
+    setLoading(true);
+
+    try {
+      const response = await axios.post('/api/generate', generateRps, { responseType: 'blob' });
+
+      const courseName = generateRps?.matakuliah?.nama?.replace(/\s+/g, '_') || 'document';
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+
+      link.href = url;
+      link.setAttribute('download', `${courseName}_rps.docx`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Error generating document:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const expandIcon = value => <i className={expanded === value ? 'tabler-minus' : 'tabler-plus'} />
-
   return (
-    <div>
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Card sx={{ mb: 4 }}>
-          <CardContent>
-            <Box>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                  Algoritma dan Pemrograman
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="success"
-                  startIcon={
-                    <i className='tabler-download' />
-                  }
-                  href="/path/to/document.pdf"
-                  download
-                >
-                  Download
-                </Button>
-              </div>
-              <Typography variant="subtitle1" color="text.secondary">
-                Kode: {courseData.matakuliah_info.kode} | SKS: {courseData.matakuliah_info.sks} | Semester: {courseData.matakuliah_info.semester}
-              </Typography>
-              <Typography variant="body1" sx={{ mt: 2 }}>
-                {courseData.pengantar_matakuliah.deskripsi_maata_kuliah}
-              </Typography>
-            </Box>
-
-          </CardContent>
-        </Card>
-
-        <Box sx={{ borderBottom: 2, borderColor: 'divider', mb: 2 }}>
+    <Card className='previewCard'>
+      <CardContent className='sm:!p-12'>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Typography variant="h4" sx={{ mb: 1, fontWeight: 'bold', textAlign: 'center' }}>
+              {matakuliah.nama}
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ textAlign: 'center', mb: 3 }}>
+              {matakuliah.kode} | {matakuliah.rumpun_mk} | {matakuliah.sks} SKS | Semester {matakuliah.semester}
+            </Typography>
+            <Divider sx={{ mb: 1 }} />
+          </Grid>
+        </Grid>
+        <Box sx={{ borderBottom: 2, borderColor: 'divider', mb: 3 }}>
           <TabContext value={activeTab}>
-            <TabList onChange={handleTabChange} aria-label='Minimal Tabs' variant='fullWidth'>
-              <Tab icon={<i className='tabler-users' />} value='overview' label='Pendahuluan' iconPosition='start' />
-              <Tab icon={<i className='tabler-lock' />} value='capaian-pembelajaran' label='Capaian Pembelajaran' iconPosition='start' />
-              <Tab icon={<i className='tabler-bookmark' />} value='topik-mingguan' label='Topik Mingguan' iconPosition='start' />
-              <Tab icon={<i className='tabler-bell' />} value='referensi' label='Referensi' iconPosition='start' />
+            <TabList onChange={handleTabChange} variant='fullWidth'>
+              <Tab label="Mata Kuliah" value="mata-kuliah" />
+              <Tab label="Topik Mingguan" value="topik-mingguan" />
+              <Tab label="Penilaian" value="penilaian" />
+              <Tab label="Dosen" value="dosen" />
             </TabList>
-            <CardContent>
-              <TabPanel value='overview'>
-                <Card sx={{ mt: 2, maxHeight: 400, overflow: 'auto' }}>
-                  <CardContent>
-                    <Typography variant="h4" gutterBottom>Kata Pengantar</Typography>
-                    <Typography variant="body1">{courseData.kata_pengantar}</Typography>
-                  </CardContent>
-                </Card>
-                <Card sx={{ mt: 2, maxHeight: 400, overflow: 'auto' }}>
-                  <CardContent>
-                    <Typography variant="h4" gutterBottom>Topik Materi Ajar</Typography>
-                    <List>
-                      {courseData.topik_materi_ajar.map((topik, index) => (
-                        <ListItem key={index}>
-                          <ListItemIcon>
-                            <i className='tabler-player-record-filled text-[12px]' />
-                          </ListItemIcon>
-                          <ListItemText primary={topik} />
-                        </ListItem>
-                      ))}
-                    </List>
-
-                    <Typography variant="h6" gutterBottom>Cara Penggunaan Modul</Typography>
-                    <Typography variant="body1">{courseData.cara_penggunaan_module}</Typography>
-                  </CardContent>
-                </Card>
-              </TabPanel>
-              <TabPanel value='capaian-pembelajaran'>
-                <Card sx={{ mt: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" gutterBottom>Capaian Pembelajaran</Typography>
-                    <Accordion expanded={expanded === 'cpl'} onChange={handleAccordionChange('cpl')}>
-                      <AccordionSummary expandIcon={expandIcon('cpl')}>
-                        <Typography>Capaian Pembelajaran Lulusan</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <List>
-                          {courseData.pengantar_matakuliah.capaian_pembelajaran.capaian_pembelajaran_lulusan.map((cpl, index) => (
-                            <ListItem key={index}>
-                              <ListItemIcon>
-                                <i className='tabler-player-record-filled text-[12px]' />
-                              </ListItemIcon>
-                              <ListItemText primary={cpl} />
-                            </ListItem>
-                          ))}
-                        </List>
-                      </AccordionDetails>
-                    </Accordion>
-                    <Accordion expanded={expanded === 'cpmk'} onChange={handleAccordionChange('cpmk')}>
-                      <AccordionSummary expandIcon={expandIcon('cpmk')}>
-                        <Typography>Capaian Pembelajaran Mata Kuliah</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <List>
-                          {courseData.pengantar_matakuliah.capaian_pembelajaran.capaian_pembelajaran_matakuliah.map((cpmk, index) => (
-                            <ListItem key={index}>
-                              <ListItemIcon>
-                                <i className='tabler-player-record-filled text-[12px]' />
-                              </ListItemIcon>
-                              <ListItemText primary={cpmk} />
-                            </ListItem>
-                          ))}
-                        </List>
-                      </AccordionDetails>
-                    </Accordion>
-                    <Accordion expanded={expanded === 'sub-cpmk'} onChange={handleAccordionChange('sub-cpmk')}>
-                      <AccordionSummary expandIcon={expandIcon('sub-cpmk')}>
-                        <Typography>Sub-CPMK</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <List>
-                          {courseData.pengantar_matakuliah.capaian_pembelajaran.sub_cpmk.map((subCpmk, index) => (
-                            <ListItem key={index}>
-                              <ListItemIcon>
-                                <i className='tabler-player-record-filled text-[12px]' />
-                              </ListItemIcon>
-                              <ListItemText primary={subCpmk} />
-                            </ListItem>
-                          ))}
-                        </List>
-                      </AccordionDetails>
-                    </Accordion>
-                  </CardContent>
-                </Card>
-              </TabPanel>
-              <TabPanel value='topik-mingguan'>
-                <Card sx={{ mt: 2 }}>
-                  <CardContent>
-                    <Typography variant="h4" gutterBottom>Capaian Pembelajaran</Typography>
-                    <Box>
-                      <Box sx={{ mb: 2 }}>
-                        {courseData.pertemuan_per_pekan.map((pertemuan) => (
-                          <Chip
-                            key={pertemuan.pekan}
-                            label={`Pekan ${pertemuan.pekan}`}
-                            onClick={() => setActiveWeek(pertemuan.pekan)}
-                            color={activeWeek === pertemuan.pekan ? "primary" : "default"}
-                            sx={{ mr: 2, mb: 1 }}
-                          />
-                        ))}
-                      </Box>
-                      {courseData.pertemuan_per_pekan.map((pertemuan) => (
-                        pertemuan.pekan === activeWeek && (
-                          <Box key={pertemuan.pekan}>
-                            <Typography variant="h6" gutterBottom>{pertemuan.deskripsi_topik}</Typography>
-                            <Accordion expanded={expanded === 'weekly-cpmk'} onChange={handleAccordionChange('weekly-cpmk')}>
-                              <AccordionSummary expandIcon={expandIcon('weekly-cpmk')}>
-                                <Typography>CPMK</Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <List>
-                                  {pertemuan.cpmk.map((item, index) => (
-                                    <ListItem key={index}>
-                                      <ListItemIcon>
-                                        <i className='tabler-player-record-filled text-[12px]' />
-                                      </ListItemIcon>
-                                      <ListItemText primary={item} />
-                                    </ListItem>
-                                  ))}
-                                </List>
-                              </AccordionDetails>
-                            </Accordion>
-                            <Accordion>
-                              <AccordionSummary expandIcon={
-                                <i className='tabler-copy-plus'></i>
-                              }>
-                                <Typography>Sub-CPMK</Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <List>
-                                  {pertemuan.sub_cpmk.map((item, index) => (
-                                    <ListItem key={index}>
-                                      <ListItemIcon>
-                                        <i className='tabler-player-record-filled text-[12px]' />
-                                      </ListItemIcon>
-                                      <ListItemText primary={item} />
-                                    </ListItem>
-                                  ))}
-                                </List>
-                              </AccordionDetails>
-                            </Accordion>
-                            <Accordion>
-                              <AccordionSummary expandIcon={
-                                <i className='tabler-copy-plus'></i>
-                              }>
-                                <Typography>Indikator</Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <List>
-                                  {pertemuan.indikator.map((item, index) => (
-                                    <ListItem key={index}>
-                                      <ListItemIcon>
-                                        <i className='tabler-player-record-filled text-[12px]' />
-                                      </ListItemIcon>
-                                      <ListItemText primary={item} />
-                                    </ListItem>
-                                  ))}
-                                </List>
-                              </AccordionDetails>
-                            </Accordion>
-                            <Accordion>
-                              <AccordionSummary expandIcon={
-                                <i className='tabler-copy-plus'></i>
-                              }>
-                                <Typography>Bahan Kajian</Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <List>
-                                  {pertemuan.bahan_kajian.map((item, index) => (
-                                    <ListItem key={index}>
-                                      <ListItemIcon>
-                                        <i className='tabler-player-record-filled text-[12px]' />
-                                      </ListItemIcon>
-                                      <ListItemText primary={item} />
-                                    </ListItem>
-                                  ))}
-                                </List>
-                              </AccordionDetails>
-                            </Accordion>
-                            <Card sx={{ mt: 2 }}>
-                              <CardContent>
-                                <Typography variant="h6" gutterBottom>Petunjuk Belajar</Typography>
-                                <Typography variant="body2">{pertemuan.petunjuk_belajar_topik}</Typography>
-                              </CardContent>
-                            </Card>
-                          </Box>
-                        )
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </TabPanel>
-              <TabPanel value='referensi'>
-                <Card sx={{ mt: 2 }}>
-                  <CardContent>
-                    <Box>
-                      <Typography variant="h4" gutterBottom>Referensi</Typography>
-                      <List>
-                        {courseData.referensi.map((ref, index) => (
-                          <ListItem key={index}>
-                            <ListItemIcon>
-                              <i className='tabler-player-record-filled text-[12px]' />
-                            </ListItemIcon>
-                            <ListItemText primary={ref} />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </TabPanel>
-            </CardContent>
+            <TabPanel value="mata-kuliah">
+              <Card sx={{ mb: 3 }}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom>Deskripsi Mata Kuliah</Typography>
+                  <Typography variant="body2" sx={{ mb: 2 }}>
+                    {generateRps?.deskripsi_matakuliah}
+                  </Typography>
+                  <Typography variant="h6" sx={{ mb: 1 }}>Capaian Pembelajaran Lulusan</Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                    {generateRps?.capaian_pembelajaran_lulusan?.kode?.map((code, idx) => (
+                      <Chip
+                        key={idx}
+                        label={`${code}: ${generateRps?.capaian_pembelajaran_lulusan?.nama?.[idx]}`}
+                      />
+                    ))}
+                  </Box>
+                  <Typography variant="h6" sx={{ mt: 2 }}>Capaian Pembelajaran Mata Kuliah</Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {generateRps?.capaian_pembelajaran_matakuliah?.kode?.map((code, idx) => (
+                      <Chip
+                        key={idx}
+                        label={`${code}: ${generateRps?.capaian_pembelajaran_matakuliah?.nama?.[idx]}`}
+                      />
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            </TabPanel>
+            <TabPanel value="topik-mingguan">
+              {/* Tampilkan topik mingguan dari generateRps */}
+            </TabPanel>
+            <TabPanel value="penilaian">
+              {/* Tampilkan komponen penilaian dari generateRps */}
+            </TabPanel>
+            <TabPanel value="dosen-bersangkutan">
+              {/* Tampilkan dosen pengembang dari generateRps */}
+            </TabPanel>
           </TabContext>
         </Box>
-      </Container>
-    </div>
+      </CardContent>
+    </Card>
   );
-};
-
-export default CourseDisplayMUI;
-
+}

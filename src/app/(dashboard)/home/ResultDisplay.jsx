@@ -29,6 +29,7 @@ const getRandomColor = () => {
 };
 
 export default function ResultDisplay({ generateRps }) {
+
   const matakuliah = generateRps?.matakuliah || {};
   const dosen_pengembang = generateRps?.dosen_pengembang || {};
   const komponen_penilaian = generateRps?.komponen_penilaian || {};
@@ -65,6 +66,7 @@ export default function ResultDisplay({ generateRps }) {
             <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
               Hasil Rancangan Pembelajaran Semester
             </Typography>
+            <span> {matakuliah.kode} SKS</span> | <span>Semester {dataMataKuliah.matakuliah.semester}</span>
             <Divider sx={{ mb: 3 }} />
           </Grid>
           <Grid item xs={12}>

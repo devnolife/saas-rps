@@ -59,6 +59,9 @@ export async function POST(request) {
       sub_cpmk_pekan: Array.isArray(item?.sub_cpmk) ? item.sub_cpmk.map((cpmk, index) => ({
         sub_cpmk_value: `${index + 1}. ${cpmk}`,
       })) : [],
+      indikator_pekan: Array.isArray(item?.indikator) ? item.indikator.map((indikator, index) => ({
+        indikator_value: `${index + 1}. ${indikator}`,
+      })) : [],
     }));
 
     doc.render({
@@ -75,7 +78,11 @@ export async function POST(request) {
       })),
       cara_penggunaan_module: data?.cara_penggunaan_module,
       referensi: data?.referensi,
-      per_pekan: pertemuanPerPekanUpper
+      glosarium: data?.glosarium,
+      per_pekan: pertemuanPerPekanUpper,
+      petunjuk_belajar_topik: data?.pertemuan_per_pekan?.map((item) => ({
+        petunjuk_belajar_topik: item?.petunjuk_belajar_topik,
+      })),
     });
 
 

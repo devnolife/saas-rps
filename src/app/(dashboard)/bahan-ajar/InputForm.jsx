@@ -225,6 +225,24 @@ export default function CourseForm({ formData, setFormData, handleChange, handle
               }}
             />
           </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Program Studi"
+              name="programStudi"
+              value={formData.programStudi}
+              onChange={handleChange}
+              placeholder="Contoh: Teknik Informatika"
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <i className="tabler-school" />
+                  </InputAdornment>
+                )
+              }}
+            />
+          </Grid>
           <Grid item xs={12}>
             <Divider />
           </Grid>
@@ -363,6 +381,24 @@ export default function CourseForm({ formData, setFormData, handleChange, handle
               }}
             />
           </Grid>
+          <Grid item xs={12}>
+            <Typography variant='body2' className='font-medium'>
+              4. Instruksi Khusus (Opsional)
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Instruksi Khusus"
+              name="instruksiKhusus"
+              value={formData.instruksiKhusus}
+              onChange={handleChange}
+              placeholder="Tambahkan instruksi khusus di sini"
+              variant="outlined"
+            />
+          </Grid>
         </Grid>
       </CardContent>
       <Divider />
@@ -383,11 +419,13 @@ export default function CourseForm({ formData, setFormData, handleChange, handle
             sksPraktikum: '',
             jumlahPertemuan: '',
             semester: '',
+            programStudi: '',
             dosenPengampu: '',
             dosenKoordinator: '',
             ketuaProgram: '',
             bahanKajian: '',
-            cpl: ''
+            cpl: '',
+            instruksiKhusus: ''
           })}
         >
           Atur Ulang
