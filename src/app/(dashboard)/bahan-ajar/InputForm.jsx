@@ -14,15 +14,10 @@ export default function CourseForm({ formData, setFormData, handleChange, handle
     if (['sks', 'sksTeori', 'sksPraktikum'].includes(name)) {
       const regexFloat = /^[0-9]*\.?[0-9]+$/;
 
-      if (value === '0' || value === '0.') {
+      if (!regexFloat.test(value)) {
         setErrors(prevErrors => ({
           ...prevErrors,
-          [name]: 'Angka nol harus dalam format 0.0 atau memiliki desimal.'
-        }));
-      } else if (!regexFloat.test(value)) {
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          [name]: 'Inputan harus berupa angka '
+          [name]: 'Inputan harus berupa angka'
         }));
       } else {
         setErrors(prevErrors => ({

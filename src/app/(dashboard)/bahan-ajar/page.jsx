@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 
 import { Button, Box, Card, CardHeader, Divider, CardActions, CircularProgress, Typography, Alert } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 
 import useGraphql from '@utils/useGraphql'
 import InputForm from './InputForm'
@@ -24,7 +25,7 @@ export default function Page() {
     bahanKajian: '',
     cpl: '',
     instruksiKhusus: '',
-    programStudi: '',
+    programStudi: ''
   });
 
   const [result, setResult] = useState(null);
@@ -46,7 +47,7 @@ export default function Page() {
       bahanKajian: '',
       cpl: '',
       instruksiKhusus: '',
-      programStudi: '',
+      programStudi: ''
     })
     setResult(null)
   }, [])
@@ -144,11 +145,7 @@ export default function Page() {
       <Card>
         <CardHeader title='Informasi Mata Kuliah' />
         <Divider />
-        {loading ? (
-          <Box display='flex' justifyContent='center' alignItems='center' height='80dvh'>
-            <CircularProgress />
-          </Box>
-        ) : (
+        {!result ? (
           <>
             <InputForm
               formData={formData}
@@ -165,13 +162,10 @@ export default function Page() {
               </Alert>
             )}
           </>
+        ) : (
+          <HasilGenerate result={result} />
         )}
       </Card>
-      {result && (
-        <div style={{ marginTop: 20 }}>
-          <HasilGenerate result={result} />
-        </div>
-      )}
     </>
   )
 }

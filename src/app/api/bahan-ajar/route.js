@@ -15,22 +15,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-function changeFormatJSON(data) {
-  const result = [];
-  const keys = Object.keys(data);
 
-  for (let i = 0; i < data[keys[0]].length; i++) {
-    const obj = {};
-
-    keys.forEach(key => {
-      obj[key] = data[key][i];
-    });
-    result.push(obj);
-  }
-
-
-  return result;
-}
 
 export async function POST(request) {
   try {
