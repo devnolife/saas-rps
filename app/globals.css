@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 100% 98%;
+    --foreground: 210 50% 20%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 50% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 50% 20%;
+    --primary: 210 100% 68%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 48 100% 91%;
+    --secondary-foreground: 90 15% 31%;
+    --muted: 210 20% 92%;
+    --muted-foreground: 210 20% 50%;
+    --accent: 130 15% 59%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 210 100% 68%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 210 50% 10%;
+    --foreground: 210 20% 98%;
+    --card: 210 50% 15%;
+    --card-foreground: 210 20% 98%;
+    --popover: 210 50% 15%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 100% 68%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 48 30% 30%;
+    --secondary-foreground: 48 100% 91%;
+    --muted: 210 40% 20%;
+    --muted-foreground: 210 20% 70%;
+    --accent: 130 15% 40%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 40% 20%;
+    --input: 210 40% 20%;
+    --ring: 210 100% 68%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+.gen-z-gradient {
+  background: linear-gradient(135deg, #5ab2ff 0%, #caf4ff 100%);
+}
+
+.gen-z-gradient-alt {
+  background: linear-gradient(135deg, #a0deff 0%, #fff9d0 100%);
+}
+
+.gen-z-blob {
+  border-radius: 71% 29% 65% 35% / 36% 53% 47% 64%;
+}
+
+.gen-z-blob-alt {
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+}
+
+.gen-z-card {
+  @apply rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300;
+}
+
+.gen-z-button {
+  @apply rounded-full font-medium transition-all duration-300 hover:scale-105 active:scale-95;
+}
+
+.gen-z-input {
+  @apply rounded-2xl border-2 focus:border-primary focus:ring-2 focus:ring-primary-light/50 transition-all duration-300;
+}
+
+/* Add smooth transitions for theme changes */
+.theme-transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Animation for theme indicator */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
